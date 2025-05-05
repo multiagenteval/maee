@@ -402,6 +402,10 @@ Include:
         final_analysis = self.analyze_results(results)
         workflow_results["steps"].append({"step": "results_analysis", "results": final_analysis})
         
+        # 6. Generate Visualization
+        from ..visualization.metrics_plot import plot_metrics_history
+        plot_metrics_history()
+        
         # Save workflow results
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_file = self.output_dir / f"workflow_results_{timestamp}.json"
