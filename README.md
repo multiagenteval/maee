@@ -1,155 +1,117 @@
-# AI Evaluation Ecosystem
+# MAEE (Multi-Agent Evaluation Ecosystem)
 
-A multi-agent evaluation ecosystem that plugs into your CI/CD process, evaluates your commits/releases, and provides bottom-up insight into your model performance across the board and longitudinally.
+A real-time ML model evaluation system that uses OpenAI and Git integration to detect, analyze, and evaluate code changes.
 
 ## Features
 
-- **Commit Risk Analyzer**: Flagship agent that learns from historical commit-metric pairs to predict potential risks
-- **Metric Evaluator**: Comprehensive model evaluation across multiple datasets and metrics
-- **Test Suggester**: Recommends additional tests based on identified risks
-- **Performance Tracker**: Longitudinal tracking of model performance
-- **Interactive Dashboard**: Visualize model performance and commit impacts
-- **CI/CD Integration**: Seamless integration with GitHub Actions, Jenkins, and GitLab CI
+- Real-time code change detection using GitPython
+- Intelligent change analysis using OpenAI GPT-4
+- Automated evaluation planning and execution
+- Regression detection and analysis
+- Comprehensive result tracking
 
-## Installation
+## Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/maee-eval-ecosystem.git
+cd maee-eval-ecosystem
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Configure environment variables:
+```bash
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+```
+
+## Usage
+
+### Running the Agent
 
 ```bash
-pip install ai-eval-ecosystem
+# Run with default settings
+python -m maee_agent.cli run
+
+# Run with specific evaluation type
+python -m maee_agent.cli run --evaluation-type accuracy
+
+# Run with different OpenAI model
+python -m maee_agent.cli run --model gpt-4
 ```
 
-## Quick Start
-
-1. Add a configuration file to your ML project:
-
-```yaml
-# .eval-config.yaml
-model:
-  name: "Your Model"
-  type: "classification"
-  metrics:
-    - accuracy
-    - f1
-    - latency
-  datasets:
-    - name: "test"
-      path: "data/test"
-
-evaluation:
-  schedule:
-    - on_commit
-    - nightly
-  thresholds:
-    accuracy: 0.95
-    latency_ms: 100
-```
-
-2. Start the dashboard:
+### Viewing Results
 
 ```bash
-eval-dashboard --config .eval-config.yaml
+# View latest results
+python -m maee_agent.cli view
+
+# View summary only
+python -m maee_agent.cli view --summary
+
+# View specific results file
+python -m maee_agent.cli view --results-file output/workflow/workflow_results_20250505_123456.json
 ```
 
-3. Analyze commits:
+### Viewing History
 
 ```bash
-eval-analyze --config .eval-config.yaml
+# View all evaluation history
+python -m maee_agent.cli history
+
+# View history for specific commit range (coming soon)
+python -m maee_agent.cli history HEAD~5..HEAD
 ```
 
-4. Get test suggestions:
+## Workflow
 
-```bash
-eval-suggest --config .eval-config.yaml
+1. **Change Detection**
+   - Monitors Git repository for changes
+   - Detects modifications to model code, training scripts, etc.
+
+2. **Change Analysis**
+   - Uses OpenAI to analyze code changes
+   - Identifies impact areas and potential risks
+   - Determines required evaluations
+
+3. **Evaluation Planning**
+   - Creates detailed evaluation plan
+   - Specifies metrics, datasets, and success criteria
+
+4. **Evaluation Execution**
+   - Runs specified evaluations
+   - Collects performance metrics
+   - Tracks results
+
+5. **Results Analysis**
+   - Analyzes evaluation results
+   - Detects regressions
+   - Provides recommendations
+
+## Directory Structure
+
 ```
-
-## Architecture
-
-The ecosystem consists of several specialized agents:
-
-1. **Commit Risk Analyzer**
-   - Learns from historical commit-metric pairs
-   - Predicts potential risks from new commits
-   - Suggests additional tests
-
-2. **Metric Evaluator**
-   - Runs comprehensive model evaluations
-   - Tracks multiple metrics across datasets
-   - Generates detailed reports
-
-3. **Test Suggester**
-   - Recommends tests based on risks
-   - Learns from historical test effectiveness
-   - Prioritizes critical test cases
-
-4. **Performance Tracker**
-   - Tracks metrics over time
-   - Identifies trends and anomalies
-   - Generates performance reports
-
-## Integration
-
-### GitHub Actions
-
-```yaml
-# .github/workflows/eval.yml
-name: Model Evaluation
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  evaluate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-      - name: Install dependencies
-        run: |
-          pip install ai-eval-ecosystem
-      - name: Run evaluation
-        run: |
-          eval-analyze --config .eval-config.yaml
-          eval-suggest --config .eval-config.yaml
+maee_agent/
+├── core/
+│   └── agent.py     # Main agent implementation
+├── cli.py           # Command-line interface
+├── output/
+│   └── workflow/    # Workflow results and history
+└── ...
 ```
-
-### Jenkins
-
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Evaluate') {
-            steps {
-                sh 'pip install ai-eval-ecosystem'
-                sh 'eval-analyze --config .eval-config.yaml'
-                sh 'eval-suggest --config .eval-config.yaml'
-            }
-        }
-    }
-}
-```
-
-## Dashboard
-
-The interactive dashboard provides:
-
-- Model performance overview
-- Detailed metrics analysis
-- Commit impact analysis
-- Test coverage insights
-- Risk predictions
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details. 
