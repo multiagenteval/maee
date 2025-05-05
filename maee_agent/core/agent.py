@@ -7,19 +7,39 @@ import git
 from openai import OpenAI
 from dotenv import load_dotenv
 
-# Load environment variables
-load_dotenv()
+# Get the root directory and load environment variables from root .env
+ROOT_DIR = Path(__file__).parent.parent.parent
+load_dotenv(ROOT_DIR / ".env")
 
 class MAEEAgent:
-    def __init__(self, repo_path: str, model: str = "gpt-4-turbo-preview"):
+    def __init__(self, repo_path: str, model: str = "o3-mini"):
         """Initialize the MAEE agent with repository path and OpenAI model."""
         self.repo_path = Path(repo_path)
         self.model = model
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.client = OpenAI(
+            api_key=os.getenv("OPENAI_API_KEY"),
+            organization="org-J0gyKgcFcDHR1iv8zJeyYBvl"
+        )
         self.repo = git.Repo(repo_path)
         self.output_dir = self.repo_path / "output" / "workflow"
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
+    def _log_openai_interaction(self, prompt: str, response: str, step: str):
+        """Log OpenAI prompt and response to a JSON file."""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_file = self.output_dir / f"openai_logs_{timestamp}.json"
+        
+        log_entry = {
+            "timestamp": datetime.now().isoformat(),
+            "step": step,
+            "model": self.model,
+            "prompt": prompt,
+            "response": response
+        }
+        
+        with open(log_file, "w") as f:
+            json.dump(log_entry, f, indent=2)
+            
     def detect_changes(self) -> Dict[str, Any]:
         """Detect actual code changes in the repository."""
         # Get the current and previous commit
@@ -55,20 +75,37 @@ class MAEEAgent:
         if not changes["changes_detected"]:
             return {"analysis": "No changes to analyze"}
             
+        # Get available evaluations from config
+        from ..config import EVAL_CATEGORIES
+        required_evals = list(EVAL_CATEGORIES["required"].keys())
+        optional_evals = list(EVAL_CATEGORIES["optional"].keys())
+            
         # Prepare the prompt for OpenAI
-        prompt = f"""Analyze the following code changes and provide:
-1. Impact areas (e.g., model architecture, training, evaluation)
-2. Risk level (low, medium, high)
-3. Required evaluations
-4. Potential risks
+        prompt = f"""Analyze the following code changes and determine which evaluations to run.
+
+Available Evaluations:
+Required:
+{chr(10).join(f"- {eval_name}: {desc}" for eval_name, desc in EVAL_CATEGORIES["required"].items())}
+
+Optional:
+{chr(10).join(f"- {eval_name}: {desc}" for eval_name, desc in EVAL_CATEGORIES["optional"].items())}
 
 Changes detected in files: {changes['files_changed']}
 
 Diffs:
 {json.dumps(changes['diffs'], indent=2)}
 
-Note: The learning rate has been increased from 0.001 to 0.1 and the learning rate scheduler has been removed.
-This is likely to cause training instability and potential performance regression.
+For each evaluation, determine if it should be run based on the changes.
+For required evaluations, indicate if they are relevant to the changes.
+For optional evaluations, recommend which ones to run based on the changes.
+
+Provide your response in the following format:
+1. Required Evaluations:
+   - [eval_name]: [yes/no] - [reason]
+2. Optional Evaluations:
+   - [eval_name]: [yes/no] - [reason]
+3. Additional Notes:
+   - [any additional context or recommendations]
 """
 
         response = self.client.chat.completions.create(
@@ -76,9 +113,11 @@ This is likely to cause training instability and potential performance regressio
             messages=[
                 {"role": "system", "content": "You are an AI expert in code analysis and ML model evaluation."},
                 {"role": "user", "content": prompt}
-            ],
-            temperature=0.0
+            ]
         )
+        
+        # Log the interaction
+        self._log_openai_interaction(prompt, response.choices[0].message.content, "change_analysis")
         
         # Parse the response
         analysis = response.choices[0].message.content
@@ -90,85 +129,165 @@ This is likely to cause training instability and potential performance regressio
         
     def plan_evaluations(self, analysis: Dict[str, Any]) -> Dict[str, Any]:
         """Plan evaluations based on the analysis."""
-        prompt = f"""Based on the following analysis, create a detailed evaluation plan:
-
-{json.dumps(analysis, indent=2)}
-
-Include:
-1. Required metrics to evaluate
-2. Test datasets to use
-3. Baseline comparisons needed
-4. Success criteria
-"""
-
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": "You are an AI expert in ML model evaluation planning."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.0
-        )
+        # Get available evaluations from config
+        from ..config import EVAL_CATEGORIES
         
-        plan = response.choices[0].message.content
+        # Parse the analysis to determine which evaluations to run
+        required_evals = []
+        optional_evals = []
+        
+        # Split the analysis into sections
+        sections = analysis["raw_analysis"].split("\n\n")
+        current_section = None
+        
+        for line in sections[0].split("\n"):
+            if line.startswith("1. Required Evaluations:"):
+                current_section = "required"
+            elif line.startswith("2. Optional Evaluations:"):
+                current_section = "optional"
+            elif line.startswith("3. Additional Notes:"):
+                break
+            elif line.strip().startswith("- ") and current_section:
+                eval_name = line.split(":")[0].strip("- ").strip()
+                should_run = "yes" in line.lower()
+                if should_run:
+                    if current_section == "required":
+                        required_evals.append(eval_name)
+                    else:
+                        optional_evals.append(eval_name)
+        
+        # Create evaluation plan
+        plan = {
+            "required_evaluations": required_evals,
+            "optional_evaluations": optional_evals,
+            "metrics": [],
+            "test_datasets": [],
+            "baseline_comparisons": [],
+            "success_criteria": {}
+        }
+        
+        # Add metrics and datasets based on selected evaluations
+        for eval_name in required_evals + optional_evals:
+            if eval_name in EVAL_CATEGORIES["required"]:
+                eval_config = EVAL_CATEGORIES["required"][eval_name]
+            else:
+                eval_config = EVAL_CATEGORIES["optional"][eval_name]
+            
+            # Add metrics and datasets based on evaluation type
+            if eval_name == "accuracy":
+                plan["metrics"].extend(["accuracy", "precision", "recall", "f1"])
+                plan["test_datasets"].append("test")
+            elif eval_name == "performance":
+                plan["metrics"].extend(["inference_time", "memory_usage", "throughput"])
+                plan["test_datasets"].append("test")
+            elif eval_name == "robustness":
+                plan["metrics"].extend(["adversarial_accuracy", "noise_robustness"])
+                plan["test_datasets"].append("test_adversarial")
+            elif eval_name == "fairness":
+                plan["metrics"].extend(["demographic_parity", "equal_opportunity"])
+                plan["test_datasets"].append("test_balanced")
+            elif eval_name == "interpretability":
+                plan["metrics"].extend(["feature_importance", "decision_boundary"])
+                plan["test_datasets"].append("test")
+            elif eval_name == "safety":
+                plan["metrics"].extend(["harmful_outputs", "bias_amplification"])
+                plan["test_datasets"].append("test")
+        
+        # Add baseline comparisons and success criteria
+        plan["baseline_comparisons"] = ["previous_commit", "production"]
+        plan["success_criteria"] = {
+            "accuracy": {"threshold": 0.95},
+            "inference_time": {"threshold": 0.1},  # seconds
+            "memory_usage": {"threshold": 1000}  # MB
+        }
         
         return {
-            "raw_plan": plan,
-            "structured_plan": self._structure_evaluation_plan(plan)
+            "raw_plan": json.dumps(plan, indent=2),
+            "structured_plan": plan
         }
         
     def execute_evaluations(self, plan: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the evaluation plan and collect results."""
-        # Simulate performance regression due to increased learning rate
+        import sys
+        from pathlib import Path
+        
+        # Add demo_repo to Python path
+        demo_repo_path = Path(self.repo_path)
+        if str(demo_repo_path) not in sys.path:
+            sys.path.append(str(demo_repo_path))
+        
+        from eval.experiment_tracker import ExperimentTracker
+        
+        # Initialize experiment tracker
+        tracker = ExperimentTracker()
+        
+        # Execute evaluations and collect metrics
+        metrics_by_dataset = {
+            "test": {
+                "accuracy": 0.75,  # Simulated regression from 0.95
+                "precision": {
+                    "class_0": 0.76,
+                    "class_1": 0.74,
+                    "class_2": 0.75
+                },
+                "training_time": 3.5,  # seconds per epoch
+                "inference_time": 0.08,  # seconds per batch
+                "memory_usage": 1.5  # GB
+            }
+        }
+        
+        # Save experiment results
+        experiment = tracker.save_experiment(metrics_by_dataset, plan["structured_plan"], status="pending")
+        
+        # Compare with baseline
+        comparisons = tracker.compare_with_baseline(metrics_by_dataset["test"])
+        
         return {
             "status": "completed",
             "results": {
-                "accuracy": {
-                    "overall_accuracy": 0.75,  # Simulated regression from 0.95
-                    "class_wise_precision": {
-                        "class_0": 0.76,
-                        "class_1": 0.74,
-                        "class_2": 0.75
-                    }
-                },
-                "performance": {
-                    "training_time": "3.5s/epoch",  # Slower training
-                    "inference_time": "0.08s/batch",  # Slower inference
-                    "memory_usage": "1.5GB"  # Higher memory usage
-                }
+                "metrics": metrics_by_dataset,
+                "comparisons": comparisons,
+                "experiment": experiment
             }
         }
         
     def analyze_results(self, results: Dict[str, Any], baseline: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Analyze evaluation results and detect regressions."""
-        prompt = f"""Analyze these evaluation results and detect any regressions:
-
-Current Results:
-{json.dumps(results, indent=2)}
-
-Baseline Results:
-{json.dumps(baseline, indent=2) if baseline else "No baseline available"}
-
-Provide:
-1. Performance changes
-2. Regression detection
-3. Recommendations
-"""
-
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": "You are an AI expert in ML model evaluation analysis."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.0
-        )
+        # Extract metrics and comparisons
+        metrics = results["results"]["metrics"]
+        comparisons = results["results"]["comparisons"]
         
-        analysis = response.choices[0].message.content
+        # Create structured analysis
+        structured_analysis = {
+            "performance_changes": metrics,
+            "regressions_detected": comparisons.get("overall_status") == "regression",
+            "recommendations": []
+        }
+        
+        # Add recommendations based on comparison status
+        if comparisons.get("status") == "no_baseline":
+            structured_analysis["recommendations"].extend([
+                "Establish this as the baseline for future comparisons",
+                "Monitor these metrics for future changes",
+                "Set thresholds for acceptable performance"
+            ])
+        else:
+            if comparisons.get("overall_status") == "regression":
+                structured_analysis["recommendations"].extend([
+                    "Monitor the identified regressions",
+                    "Consider rolling back changes if regressions are significant",
+                    "Investigate root causes of performance changes"
+                ])
+            else:
+                structured_analysis["recommendations"].extend([
+                    "Continue monitoring performance metrics",
+                    "Document successful improvements",
+                    "Consider setting new baseline thresholds"
+                ])
         
         return {
-            "raw_analysis": analysis,
-            "structured_analysis": self._structure_results_analysis(analysis)
+            "raw_analysis": None,
+            "structured_analysis": structured_analysis
         }
         
     def _structure_analysis(self, raw_analysis: str) -> Dict[str, Any]:
@@ -191,9 +310,11 @@ Include:
                 {"role": "system", "content": "You are an AI assistant that converts text to structured JSON."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.0,
             response_format={"type": "json_object"}
         )
+        
+        # Log the interaction
+        self._log_openai_interaction(prompt, response.choices[0].message.content, "structure_analysis")
         
         return json.loads(response.choices[0].message.content)
         
@@ -216,9 +337,11 @@ Include:
                 {"role": "system", "content": "You are an AI assistant that converts text to structured JSON."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.0,
             response_format={"type": "json_object"}
         )
+        
+        # Log the interaction
+        self._log_openai_interaction(prompt, response.choices[0].message.content, "structure_evaluation_plan")
         
         return json.loads(response.choices[0].message.content)
         
@@ -240,9 +363,11 @@ Include:
                 {"role": "system", "content": "You are an AI assistant that converts text to structured JSON."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.0,
             response_format={"type": "json_object"}
         )
+        
+        # Log the interaction
+        self._log_openai_interaction(prompt, response.choices[0].message.content, "structure_results_analysis")
         
         return json.loads(response.choices[0].message.content)
         
