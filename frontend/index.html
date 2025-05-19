@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAEE Evaluation Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="styles/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.1/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.3.0/dist/chartjs-adapter-luxon.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-left">
+                <h1>MAEE Evaluation Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <button id="refreshBtn" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"></path>
+                        <path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </header>
+
+        <div class="app-content">
+            <div class="sidebar">
+                <div class="timeline-section">
+                    <h2>Timeline</h2>
+                    <div id="timelineContainer" class="timeline-container">
+                        <!-- Timeline will be populated here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="metrics-dashboard">
+                    <div class="card-container">
+                        <div class="card">
+                            <h3>Total Evaluations</h3>
+                            <div class="card-value" id="totalEvaluations">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>Completed Tests</h3>
+                            <div class="card-value" id="completedTests">0</div>
+                        </div>
+                        <div class="card">
+                            <h3>Latest Run</h3>
+                            <div class="card-value" id="latestRun">-</div>
+                        </div>
+                        <div class="card">
+                            <h3>Success Rate</h3>
+                            <div class="card-value" id="successRate">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="run-details" id="runDetails">
+                    <div class="no-selection">
+                        <p>Select a run from the timeline to view details</p>
+                    </div>
+                    <!-- Run details will be displayed here when a run is selected -->
+                    <div class="run-details-content" style="display: none;">
+                        <div class="section">
+                            <h3>Run Information</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="label">ID:</span>
+                                    <span id="mainRunId" class="value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Timestamp:</span>
+                                    <span id="mainRunTimestamp" class="value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Commit:</span>
+                                    <span id="mainRunCommit" class="value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Stage:</span>
+                                    <span id="mainRunStage" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Net Change from Prior Run</h3>
+                            <div id="mainNetChangeContainer" class="net-change-container">
+                                <div class="no-data">Select a metric to view changes</div>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Analysis</h3>
+                            <p id="mainRunAnalysis">-</p>
+                        </div>
+                        
+                        <button id="viewDetailsBtn" class="btn btn-primary view-details-btn">
+                            View Full Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="runModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Run Details</h2>
+                    <span class="close-btn">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="overview">Overview</button>
+                        <button class="tab-btn" data-tab="metrics">Metrics</button>
+                        <button class="tab-btn" data-tab="changes">Code Changes</button>
+                        <button class="tab-btn" data-tab="messages">Messages</button>
+                    </div>
+                    
+                    <div id="overview" class="tab-content active">
+                        <div class="section">
+                            <h3>Run Information</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="label">ID:</span>
+                                    <span id="runId" class="value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Timestamp:</span>
+                                    <span id="runTimestamp" class="value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Commit:</span>
+                                    <span id="runCommit" class="value">-</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="label">Stage:</span>
+                                    <span id="runStage" class="value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Net Change from Prior Run</h3>
+                            <div id="netChangeContainer" class="net-change-container">
+                                <div class="no-data">Select a metric to view changes</div>
+                            </div>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Analysis</h3>
+                            <p id="runAnalysis">-</p>
+                        </div>
+                        
+                        <div class="section">
+                            <h3>Evaluation Status</h3>
+                            <div id="evaluationStatus" class="status-grid">
+                                <!-- Status will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="metrics" class="tab-content">
+                        <div id="metricsContent">
+                            <!-- Metrics will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="changes" class="tab-content">
+                        <div id="diffContent">
+                            <!-- Code diff will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="messages" class="tab-content">
+                        <div id="messageContent">
+                            <!-- Messages will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/utils.js" type="module"></script>
+    <script src="scripts/data.js" type="module"></script>
+    <script src="scripts/charts.js" type="module"></script>
+    <script src="scripts/main.js" type="module"></script>
+</body>
+</html> 
