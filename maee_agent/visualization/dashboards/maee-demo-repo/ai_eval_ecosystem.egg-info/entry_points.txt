@@ -1,0 +1,4 @@
+[console_scripts]
+eval-analyze = core.agents.commit_analyzer:main
+eval-dashboard = dashboard.dashboard:main
+eval-suggest = core.agents.test_suggester:main

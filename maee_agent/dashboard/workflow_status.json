@@ -1,0 +1,87 @@
+{
+  "current_stage": "completion",
+  "start_time": "2025-05-06T17:38:13.703050",
+  "last_update": "2025-05-06T17:41:56.463776",
+  "errors": [
+    {
+      "message": "Error in analysis: Expecting ',' delimiter: line 279 column 163318808 (char 416401684)",
+      "timestamp": "2025-05-06T17:38:14.665437",
+      "stage": "evaluation_execution"
+    },
+    {
+      "message": "Error processing state: 'eval_status'",
+      "timestamp": "2025-05-06T17:38:14.665780",
+      "stage": "evaluation_execution"
+    }
+  ],
+  "warnings": [],
+  "metrics": {
+    "stage_history": [
+      {
+        "from": "initialization",
+        "to": "evaluation_execution",
+        "timestamp": "2025-05-06T17:38:13.703369"
+      },
+      {
+        "from": "evaluation_execution",
+        "to": "failed",
+        "timestamp": "2025-05-06T17:38:14.667284"
+      },
+      {
+        "from": "failed",
+        "to": "evaluation_execution",
+        "timestamp": "2025-05-06T17:39:20.892308"
+      },
+      {
+        "from": "evaluation_execution",
+        "to": "failed",
+        "timestamp": "2025-05-06T17:39:21.885282"
+      },
+      {
+        "from": "failed",
+        "to": "evaluation_execution",
+        "timestamp": "2025-05-06T17:39:53.239571"
+      },
+      {
+        "from": "evaluation_execution",
+        "to": "completion",
+        "timestamp": "2025-05-06T17:39:55.040493"
+      },
+      {
+        "from": "completion",
+        "to": "evaluation_execution",
+        "timestamp": "2025-05-06T17:40:29.203370"
+      },
+      {
+        "from": "evaluation_execution",
+        "to": "completion",
+        "timestamp": "2025-05-06T17:40:31.109657"
+      },
+      {
+        "from": "completion",
+        "to": "evaluation_execution",
+        "timestamp": "2025-05-06T17:41:05.391905"
+      },
+      {
+        "from": "evaluation_execution",
+        "to": "completion",
+        "timestamp": "2025-05-06T17:41:07.216976"
+      },
+      {
+        "from": "completion",
+        "to": "evaluation_execution",
+        "timestamp": "2025-05-06T17:41:54.632984"
+      },
+      {
+        "from": "evaluation_execution",
+        "to": "completion",
+        "timestamp": "2025-05-06T17:41:56.463774"
+      }
+    ],
+    "evaluation_status": {},
+    "performance_metrics": {},
+    "robustness_metrics": {},
+    "accuracy_metrics": {},
+    "current_eval": "accuracy"
+  }
+}

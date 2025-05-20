@@ -1,0 +1,178 @@
+[
+  {
+    "timestamp": "2025-05-05T15:19:11.025832",
+    "agent": "code_change_detector",
+    "input": {
+      "repository_path": "demo_repo",
+      "branch": "main"
+    },
+    "output": {
+      "changes_detected": true,
+      "files_changed": [
+        "train.py"
+      ],
+      "change_type": "model_metrics",
+      "diff": {
+        "train.py": {
+          "old_content": "def train_model(model, train_loader, val_loader, num_epochs=10):\n    criterion = nn.CrossEntropyLoss()\n    optimizer = optim.Adam(model.parameters(), lr=0.001)",
+          "new_content": "def train_model(model, train_loader, val_loader, num_epochs=10):\n    criterion = nn.CrossEntropyLoss()\n    optimizer = optim.Adam(model.parameters(), lr=0.01)  # Increased learning rate",
+          "changes": [
+            {
+              "type": "modified",
+              "line": 2,
+              "old_content": "optimizer = optim.Adam(model.parameters(), lr=0.001)",
+              "new_content": "optimizer = optim.Adam(model.parameters(), lr=0.01)  # Increased learning rate"
+            }
+          ]
+        }
+      }
+    },
+    "next_step": "diff_analysis",
+    "state": {}
+  },
+  {
+    "timestamp": "2025-05-05T15:19:11.025840",
+    "agent": "diff_analyzer",
+    "input": {
+      "files": [
+        "train.py"
+      ],
+      "change_type": "model_metrics"
+    },
+    "output": {
+      "analysis": "Modified model architecture and training parameters",
+      "impact_areas": [
+        "model_metrics",
+        "training_loop"
+      ],
+      "risk_level": "high",
+      "key_changes": [
+        "Increased learning rate from 0.001 to 0.01",
+        "Added class-wise precision tracking",
+        "Added validation class-wise precision tracking"
+      ],
+      "potential_risks": [
+        "Higher learning rate might cause training instability",
+        "Additional computations might impact performance"
+      ]
+    },
+    "next_step": "impact_analysis",
+    "state": {}
+  },
+  {
+    "timestamp": "2025-05-05T15:19:11.025842",
+    "agent": "impact_analyzer",
+    "input": {
+      "analysis": "Modified model architecture",
+      "impact_areas": [
+        "model_metrics"
+      ]
+    },
+    "output": {
+      "required_evaluations": [
+        "accuracy",
+        "performance",
+        "robustness"
+      ],
+      "optional_evaluations": [
+        "model_complexity"
+      ],
+      "priority": "high"
+    },
+    "next_step": "eval_planning",
+    "state": {}
+  },
+  {
+    "timestamp": "2025-05-05T15:19:11.025844",
+    "agent": "eval_planner",
+    "input": {
+      "required_evaluations": [
+        "accuracy",
+        "performance",
+        "robustness"
+      ]
+    },
+    "output": {
+      "evaluation_plan": {
+        "accuracy": {
+          "metrics": [
+            "overall_accuracy",
+            "class_wise_precision"
+          ],
+          "priority": "high"
+        },
+        "performance": {
+          "metrics": [
+            "training_time",
+            "inference_time"
+          ],
+          "priority": "high"
+        },
+        "robustness": {
+          "metrics": [
+            "error_handling",
+            "edge_cases"
+          ],
+          "priority": "high"
+        }
+      }
+    },
+    "next_step": "eval_execution",
+    "state": {}
+  },
+  {
+    "timestamp": "2025-05-05T15:19:11.025845",
+    "agent": "eval_executor",
+    "input": {
+      "evaluation_plan": "accuracy"
+    },
+    "output": {
+      "results": {
+        "overall_accuracy": 0.75,
+        "class_wise_precision": {
+          "class_0": 0.76,
+          "class_1": 0.74,
+          "class_2": 0.75
+        }
+      },
+      "status": "completed"
+    },
+    "next_step": "results_analysis",
+    "state": {}
+  },
+  {
+    "timestamp": "2025-05-05T15:19:11.026084",
+    "agent": "results_analyzer",
+    "input": {
+      "results": {
+        "accuracy": 0.75
+      }
+    },
+    "output": {
+      "summary": "No significant regression detected",
+      "recommendations": [
+        "Continue monitoring performance"
+      ],
+      "regression_details": {
+        "status": "stable",
+        "accuracy_decrease": 0.0,
+        "class_regressions": {
+          "class_0": {
+            "decrease": 0.0,
+            "is_regression": false
+          },
+          "class_1": {
+            "decrease": 0.0,
+            "is_regression": false
+          },
+          "class_2": {
+            "decrease": 0.0,
+            "is_regression": false
+          }
+        }
+      }
+    },
+    "next_step": "complete",
+    "state": {}
+  }
+]

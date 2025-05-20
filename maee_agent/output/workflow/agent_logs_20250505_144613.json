@@ -1,0 +1,180 @@
+[
+  {
+    "timestamp": "2025-05-05T14:46:13.793845",
+    "agent": "code_change_detector",
+    "input": {
+      "repository_path": "demo_repo",
+      "branch": "main"
+    },
+    "output": {
+      "changes_detected": true,
+      "files_changed": [
+        "train.py"
+      ],
+      "change_type": "model_metrics"
+    },
+    "next_step": "diff_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:46:13.793862",
+    "agent": "diff_analyzer",
+    "input": {
+      "files": [
+        "train.py"
+      ],
+      "change_type": "model_metrics"
+    },
+    "output": {
+      "analysis": "Modified model architecture and training parameters",
+      "impact_areas": [
+        "model_metrics",
+        "training_loop"
+      ],
+      "risk_level": "high"
+    },
+    "next_step": "impact_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:46:13.793864",
+    "agent": "impact_analyzer",
+    "input": {
+      "analysis": "Modified model architecture",
+      "impact_areas": [
+        "model_metrics"
+      ]
+    },
+    "output": {
+      "required_evaluations": [
+        "accuracy",
+        "performance",
+        "robustness"
+      ],
+      "optional_evaluations": [
+        "model_complexity"
+      ],
+      "priority": "high"
+    },
+    "next_step": "eval_planning",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:46:13.793865",
+    "agent": "eval_planner",
+    "input": {
+      "required_evaluations": [
+        "accuracy",
+        "performance",
+        "robustness"
+      ]
+    },
+    "output": {
+      "evaluation_plan": {
+        "accuracy": {
+          "metrics": [
+            "overall_accuracy",
+            "class_wise_precision"
+          ],
+          "priority": "high"
+        },
+        "performance": {
+          "metrics": [
+            "training_time",
+            "inference_time"
+          ],
+          "priority": "high"
+        },
+        "robustness": {
+          "metrics": [
+            "error_handling",
+            "edge_cases"
+          ],
+          "priority": "high"
+        }
+      }
+    },
+    "next_step": "eval_execution",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:46:13.793867",
+    "agent": "eval_executor",
+    "input": {
+      "evaluation_plan": "accuracy"
+    },
+    "output": {
+      "results": {
+        "overall_accuracy": 0.85,
+        "class_wise_precision": {
+          "class_0": 0.86,
+          "class_1": 0.84,
+          "class_2": 0.85
+        }
+      },
+      "status": "completed"
+    },
+    "next_step": "results_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:46:13.794076",
+    "agent": "results_analyzer",
+    "input": {
+      "results": {
+        "accuracy": 0.85
+      }
+    },
+    "output": {
+      "summary": "Accuracy evaluation shows potential regression",
+      "recommendations": [
+        "Investigate model architecture changes",
+        "Review training parameters"
+      ],
+      "status": "completed"
+    },
+    "next_step": "regression_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:46:13.794144",
+    "agent": "regression_analyzer",
+    "input": {
+      "metric": "overall_accuracy",
+      "current_value": 0.85
+    },
+    "output": {
+      "is_regression": true,
+      "metric": "overall_accuracy",
+      "current_value": 0.85,
+      "historical_mean": 0.8999999999999999,
+      "historical_std_dev": 0.07071067811865474,
+      "change_percentage": -5.555555555555549,
+      "threshold": 5.0,
+      "message": "Regression detected: overall_accuracy decreased by 5.56%"
+    },
+    "next_step": "end",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  }
+]

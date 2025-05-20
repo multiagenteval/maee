@@ -1,0 +1,179 @@
+[
+  {
+    "timestamp": "2025-05-05T14:45:19.972124",
+    "agent": "code_change_detector",
+    "input": {
+      "repository_path": "demo_repo",
+      "branch": "main"
+    },
+    "output": {
+      "changes_detected": true,
+      "files_changed": [
+        "train.py"
+      ],
+      "change_type": "model_metrics"
+    },
+    "next_step": "diff_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:45:19.972137",
+    "agent": "diff_analyzer",
+    "input": {
+      "files": [
+        "train.py"
+      ],
+      "change_type": "model_metrics"
+    },
+    "output": {
+      "analysis": "Added class-wise precision metrics to training script",
+      "impact_areas": [
+        "model_metrics",
+        "training_loop"
+      ],
+      "risk_level": "low"
+    },
+    "next_step": "impact_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:45:19.972139",
+    "agent": "impact_analyzer",
+    "input": {
+      "analysis": "Added class-wise precision metrics",
+      "impact_areas": [
+        "model_metrics"
+      ]
+    },
+    "output": {
+      "required_evaluations": [
+        "accuracy",
+        "performance",
+        "robustness"
+      ],
+      "optional_evaluations": [
+        "model_complexity"
+      ],
+      "priority": "high"
+    },
+    "next_step": "eval_planning",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:45:19.972141",
+    "agent": "eval_planner",
+    "input": {
+      "required_evaluations": [
+        "accuracy",
+        "performance",
+        "robustness"
+      ]
+    },
+    "output": {
+      "evaluation_plan": {
+        "accuracy": {
+          "metrics": [
+            "overall_accuracy",
+            "class_wise_precision"
+          ],
+          "priority": "high"
+        },
+        "performance": {
+          "metrics": [
+            "training_time",
+            "inference_time"
+          ],
+          "priority": "high"
+        },
+        "robustness": {
+          "metrics": [
+            "error_handling",
+            "edge_cases"
+          ],
+          "priority": "high"
+        }
+      }
+    },
+    "next_step": "eval_execution",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:45:19.972143",
+    "agent": "eval_executor",
+    "input": {
+      "evaluation_plan": "accuracy"
+    },
+    "output": {
+      "results": {
+        "overall_accuracy": 0.95,
+        "class_wise_precision": {
+          "class_0": 0.96,
+          "class_1": 0.94,
+          "class_2": 0.95
+        }
+      },
+      "status": "completed"
+    },
+    "next_step": "results_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:45:19.972330",
+    "agent": "results_analyzer",
+    "input": {
+      "results": {
+        "accuracy": 0.95
+      }
+    },
+    "output": {
+      "summary": "Accuracy evaluation passed with good results",
+      "recommendations": [
+        "No action needed"
+      ],
+      "status": "completed"
+    },
+    "next_step": "regression_analysis",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  },
+  {
+    "timestamp": "2025-05-05T14:45:19.972364",
+    "agent": "regression_analyzer",
+    "input": {
+      "metric": "overall_accuracy",
+      "current_value": 0.95
+    },
+    "output": {
+      "is_regression": false,
+      "metric": "overall_accuracy",
+      "current_value": 0.95,
+      "historical_mean": 0.95,
+      "historical_std_dev": 0,
+      "change_percentage": 0.0,
+      "threshold": 5.0,
+      "message": "No regression detected in overall_accuracy"
+    },
+    "next_step": "end",
+    "state": {
+      "commit_hash": "d7f7e9ac61e1278d379f874f40628c2cf49ba418",
+      "status": "initialized"
+    }
+  }
+]

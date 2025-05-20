@@ -1,0 +1,60 @@
+{
+  "timestamp": "2025-04-02T18:12:02.000119",
+  "required_evaluations": [
+    {
+      "name": "accuracy",
+      "priority": "high",
+      "dependencies": [],
+      "estimated_duration": "4 hours",
+      "status": "pending"
+    },
+    {
+      "name": "performance",
+      "priority": "high",
+      "dependencies": [],
+      "estimated_duration": "4 hours",
+      "status": "pending"
+    },
+    {
+      "name": "robustness",
+      "priority": "high",
+      "dependencies": [],
+      "estimated_duration": "4 hours",
+      "status": "pending"
+    }
+  ],
+  "optional_evaluations": [
+    {
+      "name": "inference_time",
+      "priority": "medium",
+      "dependencies": [],
+      "estimated_duration": "1 hour",
+      "status": "pending"
+    },
+    {
+      "name": "model_complexity",
+      "priority": "low",
+      "dependencies": [],
+      "estimated_duration": "1 hour",
+      "status": "pending"
+    }
+  ],
+  "current_eval": null,
+  "completed_evals": [],
+  "errors": [],
+  "warnings": [],
+  "messages": [
+    {
+      "agent": "analyzer",
+      "message": "Analyzing required evaluations",
+      "timestamp": "2025-04-02T18:12:02.000647"
+    },
+    {
+      "agent": "evaluator",
+      "message": "Running evaluation: robustness",
+      "timestamp": "2025-04-02T18:12:02.002607"
+    }
+  ],
+  "metrics": {},
+  "next_action": "analyze"
+}

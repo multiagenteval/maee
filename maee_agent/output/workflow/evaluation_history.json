@@ -1,0 +1,158 @@
+[
+  {
+    "commit_hash": "ec59f1a2db90eba3b0a04bbdc16edc20e5d17db2",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.95,
+      "class_wise_precision": {
+        "class_0": 0.96,
+        "class_1": 0.94,
+        "class_2": 0.95
+      }
+    },
+    "timestamp": "2025-05-05T14:56:11.900628"
+  },
+  {
+    "commit_hash": "dadcbebb6a19bb17ca5c870c8ad7b23c3c955e6a",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.85,
+      "class_wise_precision": {
+        "class_0": 0.86,
+        "class_1": 0.84,
+        "class_2": 0.85
+      }
+    },
+    "timestamp": "2025-05-05T14:56:27.822918"
+  },
+  {
+    "commit_hash": "5bdaf0b030618c5a156e38febce5aa8c8abaa9ae",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T14:58:03.911509"
+  },
+  {
+    "commit_hash": null,
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:19:02.288148"
+  },
+  {
+    "commit_hash": null,
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:19:11.025847"
+  },
+  {
+    "commit_hash": "5bdaf0b030618c5a156e38febce5aa8c8abaa9ae",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:19:11.026587"
+  },
+  {
+    "commit_hash": null,
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:19:46.338638"
+  },
+  {
+    "commit_hash": "5bdaf0b030618c5a156e38febce5aa8c8abaa9ae",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:19:46.339069"
+  },
+  {
+    "commit_hash": null,
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:20:20.539100"
+  },
+  {
+    "commit_hash": "5bdaf0b030618c5a156e38febce5aa8c8abaa9ae",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:20:20.539768"
+  },
+  {
+    "commit_hash": null,
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:33:53.319072"
+  },
+  {
+    "commit_hash": "5bdaf0b030618c5a156e38febce5aa8c8abaa9ae",
+    "evaluation_type": "accuracy",
+    "results": {
+      "overall_accuracy": 0.75,
+      "class_wise_precision": {
+        "class_0": 0.76,
+        "class_1": 0.74,
+        "class_2": 0.75
+      }
+    },
+    "timestamp": "2025-05-05T15:33:53.320056"
+  }
+]

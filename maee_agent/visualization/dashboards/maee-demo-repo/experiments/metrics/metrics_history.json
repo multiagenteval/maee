@@ -1,0 +1,269 @@
+[
+  {
+    "timestamp": "2025-03-28T18:52:03.972661",
+    "git": {
+      "commit_hash": "ad6013a5b3d9565feecbabf23a3157bb61815665",
+      "commit_message": "Implement multi-dataset evaluation with proper metrics tracking",
+      "branch": "main",
+      "status": "committed"
+    },
+    "metrics_by_dataset": {
+      "test": {
+        "accuracy": 0.214,
+        "f1": 0.13243393238027795,
+        "precision": 0.12219049014905117,
+        "recall": 0.214
+      },
+      "test_balanced": {
+        "accuracy": 0.19820627802690582,
+        "f1": 0.11783327080413668,
+        "precision": 0.10797652311840726,
+        "recall": 0.19820627802690582
+      },
+      "test_adversarial": {
+        "accuracy": 0.1499,
+        "f1": 0.052978720748206545,
+        "precision": 0.03217636849765141,
+        "recall": 0.1499
+      }
+    }
+  },
+  {
+    "timestamp": "2025-03-28T19:14:31.363634",
+    "git": {
+      "commit_hash": "ca23aed3ebdf40c2efcbfc1d7801a7787479bed6",
+      "commit_message": "fix: Adjust dropout rate from 0.8 to 0.3 for better model stability",
+      "branch": "main",
+      "status": "committed"
+    },
+    "metrics_by_dataset": {
+      "test": {
+        "accuracy": 0.9918,
+        "f1": 0.9918045231987993,
+        "precision": 0.9918468763546322,
+        "recall": 0.9918
+      },
+      "test_balanced": {
+        "accuracy": 0.9920403587443947,
+        "f1": 0.992043823462922,
+        "precision": 0.9920795552263528,
+        "recall": 0.9920403587443947
+      },
+      "test_adversarial": {
+        "accuracy": 0.2253,
+        "f1": 0.18896017334150061,
+        "precision": 0.4966516144138968,
+        "recall": 0.2253
+      }
+    }
+  },
+  {
+    "timestamp": "2025-03-28T19:20:50.046506",
+    "git": {
+      "commit_hash": "204b687b151c796b02c17aae2a67087318dce83d",
+      "commit_message": "feat: Add residual connections to CNN architecture",
+      "branch": "main",
+      "status": "committed"
+    },
+    "metrics_by_dataset": {
+      "test": {
+        "accuracy": 0.994,
+        "f1": 0.9939956598336175,
+        "precision": 0.9940052793307137,
+        "recall": 0.994
+      },
+      "test_balanced": {
+        "accuracy": 0.9938340807174888,
+        "f1": 0.9938312783959034,
+        "precision": 0.9938397383183344,
+        "recall": 0.9938340807174888
+      },
+      "test_adversarial": {
+        "accuracy": 0.9402,
+        "f1": 0.9420122874477718,
+        "precision": 0.9517799234543036,
+        "recall": 0.9402
+      }
+    }
+  },
+  {
+    "timestamp": "2025-03-28T19:24:26.160510",
+    "git": {
+      "commit_hash": "cee22e4bde2666195159410c9c7ae1b8c8c84325",
+      "commit_message": "feat: Add FGSM adversarial training support",
+      "branch": "main",
+      "status": "committed"
+    },
+    "metrics_by_dataset": {
+      "test": {
+        "accuracy": 0.9947,
+        "f1": 0.9946972457995383,
+        "precision": 0.9947035438972487,
+        "recall": 0.9947
+      },
+      "test_balanced": {
+        "accuracy": 0.9950672645739911,
+        "f1": 0.9950645970145225,
+        "precision": 0.995070697774491,
+        "recall": 0.9950672645739911
+      },
+      "test_adversarial": {
+        "accuracy": 0.9702,
+        "f1": 0.9702897758736668,
+        "precision": 0.9715931536052868,
+        "recall": 0.9702
+      }
+    }
+  },
+  {
+    "timestamp": "2025-03-29T21:55:45.854884",
+    "git": {
+      "commit_hash": "38bcd9cc6ca922958cb78745e5a7dc62fe2f98ed",
+      "commit_message": "feat: Add improved model with 99.28% accuracy on test set",
+      "branch": "main",
+      "status": "committed"
+    },
+    "metrics_by_dataset": {
+      "test": {
+        "accuracy": 0.9928,
+        "f1": 0.9927953522505438,
+        "precision": 0.9928170562062689,
+        "recall": 0.9928
+      },
+      "test_balanced": {
+        "accuracy": 0.9924887892376681,
+        "f1": 0.992484762088212,
+        "precision": 0.9925092110406476,
+        "recall": 0.9924887892376681
+      },
+      "test_adversarial": {
+        "accuracy": 0.8361,
+        "f1": 0.8223609579655197,
+        "precision": 0.8740137162483048,
+        "recall": 0.8361
+      }
+    },
+    "config": {
+      "dataset": {
+        "name": "mnist",
+        "type": "classification",
+        "params": {
+          "batch_size": 32,
+          "train_path": "data/raw/mnist/train",
+          "test_path": "data/raw/mnist/test"
+        }
+      },
+      "model": {
+        "name": "baseline_cnn",
+        "type": "pytorch",
+        "params": {
+          "input_shape": [
+            1,
+            28,
+            28
+          ],
+          "hidden_dims": [
+            32,
+            64
+          ],
+          "num_classes": 10,
+          "learning_rate": 0.001,
+          "dropout_rate": 0.5
+        }
+      },
+      "training": {
+        "epochs": 10,
+        "optimizer": {
+          "name": "adam",
+          "params": {
+            "lr": 0.001,
+            "weight_decay": 0.0001
+          }
+        },
+        "scheduler": {
+          "name": "step_lr",
+          "params": {
+            "step_size": 5,
+            "gamma": 0.1
+          }
+        },
+        "early_stopping": {
+          "patience": 3,
+          "min_delta": 0.001
+        },
+        "adversarial": {
+          "enabled": true,
+          "epsilon": 0.3
+        }
+      },
+      "data": {
+        "train": {
+          "path": "data/raw/mnist/train",
+          "batch_size": 32,
+          "shuffle": true
+        },
+        "val": {
+          "path": "data/raw/mnist/val",
+          "batch_size": 32,
+          "shuffle": false
+        },
+        "test": {
+          "path": "data/raw/mnist/test",
+          "batch_size": 32,
+          "shuffle": false
+        }
+      },
+      "metrics": {
+        "version": "v1",
+        "primary": [
+          {
+            "name": "accuracy",
+            "threshold": 0.7
+          },
+          {
+            "name": "f1",
+            "threshold": 0.65
+          }
+        ],
+        "secondary": [
+          {
+            "name": "precision",
+            "threshold": 0.6
+          },
+          {
+            "name": "recall",
+            "threshold": 0.6
+          }
+        ]
+      },
+      "tracking": {
+        "log_confusion_matrix": true
+      },
+      "eval": [
+        {
+          "name": "mnist_test",
+          "version": "v1",
+          "description": "Standard MNIST test set"
+        },
+        {
+          "name": "mnist_balanced",
+          "version": "v1",
+          "description": "Class-balanced MNIST test set"
+        },
+        {
+          "name": "mnist_noisy",
+          "version": "v1",
+          "description": "MNIST test set with added noise"
+        },
+        {
+          "name": "mnist_adversarial",
+          "version": "v1",
+          "description": "MNIST test set with FGSM adversarial attacks",
+          "params": {
+            "epsilon": 0.3
+          }
+        }
+      ]
+    }
+  }
+]

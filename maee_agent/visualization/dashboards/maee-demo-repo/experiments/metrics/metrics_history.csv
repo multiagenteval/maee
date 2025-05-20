@@ -1,0 +1,2 @@
+timestamp,commit_hash,commit_message,branch,status,test_accuracy,test_f1,test_precision,test_recall,test_balanced_accuracy,test_balanced_f1,test_balanced_precision,test_balanced_recall,test_adversarial_accuracy,test_adversarial_f1,test_adversarial_precision,test_adversarial_recall
+2025-03-29T21:55:45.854884,pending,Uncommitted changes,main,pending,0.9928,0.9927953522505438,0.9928170562062689,0.9928,0.9924887892376681,0.992484762088212,0.9925092110406476,0.9924887892376681,0.8361,0.8223609579655197,0.8740137162483048,0.8361
